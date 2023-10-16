@@ -7,26 +7,35 @@
  */
 syntax = "proto3";
 
-package schema.v1;
+package openfeature.schema.v1;
 
 import "google/protobuf/struct.proto";
 
-option csharp_namespace = "OpenFeature.Flagd.Grpc";
-option go_package = "schema/service/v1";
-option java_package = "dev.openfeature.flagd.grpc";
-option php_namespace = "OpenFeature\\Providers\\Flagd\\Schema\\Grpc";
-option ruby_package = "OpenFeature::FlagD::Provider::Grpc";
+option csharp_namespace = "OpenFeature.Grpc";
+option go_package = "openfeature/service/v1";
+option java_package = "dev.openfeature.grpc";
+option php_namespace = "OpenFeature\\Providers\\Schema\\Grpc";
+option ruby_package = "OpenFeature::Provider::Grpc";
 
 // Request body for bulk flag evaluation, used by the ResolveAll rpc.
 message ResolveAllRequest {
   // Object structure describing the EvaluationContext used in the flag evaluation, see https://openfeature.dev/docs/reference/concepts/evaluation-context
   google.protobuf.Struct context = 1;
+
+  // [Confidence] Here we can put `apply` and `client_secret`
+  google.protobuf.Struct metadata = 2;
+
+  // Optional filtering for the flag evaluation data
+  repeated string flag_keys = 3;
 }
 
 // Response body for bulk flag evaluation, used by the ResolveAll rpc.
 message ResolveAllResponse {
   // Object structure describing the evaluated flags for the provided context.
   map<string, AnyFlag> flags = 1;
+
+  // [Confidence] Here we can put `resolve_token` and `resolve_id`
+  google.protobuf.Struct metadata = 2;
 }
 
 // A variant type flag response.
@@ -38,12 +47,15 @@ message AnyFlag {
   string variant = 2;
 
   // The response value of the boolean flag evaluation, will be unset in the case of error.
+  // [Confidence] Only object values are supported
   oneof value {
     bool bool_value = 3;
     string string_value = 4;
     double double_value = 5;
     google.protobuf.Struct object_value = 6;
   }
+
+  // [Confidence] StructFlagSchema is missing. Can we just get rid of this?
 }
 
 // Request body for boolean flag evaluation, used by the ResolveBoolean rpc.
@@ -53,6 +65,9 @@ message ResolveBooleanRequest {
 
   // Object structure describing the EvaluationContext used in the flag evaluation, see https://openfeature.dev/docs/reference/concepts/evaluation-context
   google.protobuf.Struct context = 2;
+
+  // [Confidence] Here we can put `apply` and `client_secret`
+  google.protobuf.Struct metadata = 3;
 }
 
 // Response body for boolean flag evaluation. used by the ResolveBoolean rpc.
@@ -77,6 +92,9 @@ message ResolveStringRequest {
 
   // Object structure describing the EvaluationContext used in the flag evaluation, see https://openfeature.dev/docs/reference/concepts/evaluation-context
   google.protobuf.Struct context = 2;
+
+  // [Confidence] Here we can put `apply` and `client_secret`
+  google.protobuf.Struct metadata = 3;
 }
 
 // Response body for string flag evaluation. used by the ResolveString rpc.
@@ -101,6 +119,9 @@ message ResolveFloatRequest {
 
   // Object structure describing the EvaluationContext used in the flag evaluation, see https://openfeature.dev/docs/reference/concepts/evaluation-context
   google.protobuf.Struct context = 2;
+
+  // [Confidence] Here we can put `apply` and `client_secret`
+  google.protobuf.Struct metadata = 3;
 }
 
 // Response body for float flag evaluation. used by the ResolveFloat rpc.
@@ -125,6 +146,9 @@ message ResolveIntRequest {
 
   // Object structure describing the EvaluationContext used in the flag evaluation, see https://openfeature.dev/docs/reference/concepts/evaluation-context
   google.protobuf.Struct context = 2;
+
+  // [Confidence] Here we can put `apply` and `client_secret`
+  google.protobuf.Struct metadata = 3;
 }
 
 // Response body for int flag evaluation. used by the ResolveInt rpc.
@@ -149,6 +173,9 @@ message ResolveObjectRequest {
 
   // Object structure describing the EvaluationContext used in the flag evaluation, see https://openfeature.dev/docs/reference/concepts/evaluation-context
   google.protobuf.Struct context = 2;
+
+  // [Confidence] Here we can put `apply` and `client_secret`
+  google.protobuf.Struct metadata = 3;
 }
 
 // Response body for object flag evaluation. used by the ResolveObject rpc.
